@@ -1,0 +1,43 @@
+﻿services:
+  orderservice:
+    image: orderservice
+    build:
+      context: .
+      dockerfile: OrderService/Dockerfile
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_HTTP_PORTS: "8989"
+      ConnectionStrings__OrdersDb: "Host=db;Port=5432;Database=db_orders;Username=${DB_USERNAME:?Set DB_USERNAME};Password=${DB_PASSWORD:?Set DB_PASSWORD}"
+      Database__ApplyMigrations: "true"
+    ports:
+      - "127.0.0.1:5265:8989"
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - app-network
+      
+  db:
+    image: postgres:15-alpine
+    container_name: postgres-db
+    environment:
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: db_orders
+    ports:
+      - "127.0.0.1:5433:5432"
+    volumes:
+      - data_db_pr:/var/lib/postgresql/data
+    networks:
+      - app-network
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U \"$${POSTGRES_USER}\" -d \"$${POSTGRES_DB}\"" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+networks:
+  app-network:
+    
+volumes:
+  data_db_pr:
