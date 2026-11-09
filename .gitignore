@@ -1,1 +1,19 @@
+# Build output
+**/bin/
+**/obj/
+
+# IDE
+.idea/
+.vs/
+.vscode/
+*.user
+*.suo
+
+# Local configuration
 .env
+.env.*
+!.env.example
+
+# HTTP client local data
+**/.http-client/
+**/http-client.private.env.json
