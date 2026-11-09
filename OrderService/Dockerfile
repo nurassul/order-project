@@ -7,6 +7,9 @@ FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["OrderService/OrderService.csproj", "OrderService/"]
+COPY ["Orders.Domain/Orders.Domain.csproj", "Orders.Domain/"]
+COPY ["Orders.Application/Orders.Application.csproj", "Orders.Application/"]
+COPY ["Orders.Infrastructure/Orders.Infrastructure.csproj", "Orders.Infrastructure/"]
 RUN dotnet restore "OrderService/OrderService.csproj"
 COPY . .
 WORKDIR "/src/OrderService"

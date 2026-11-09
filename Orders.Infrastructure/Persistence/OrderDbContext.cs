@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using OrderService.Models;
+using Orders.Domain.Orders;
 
-namespace OrderService.Data;
+namespace Orders.Infrastructure.Persistence;
 
 public class OrderDbContext : DbContext
 {
@@ -15,8 +15,9 @@ public class OrderDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<Order>()
-            .Property(order => order.TotalAmount)
-            .HasPrecision(18, 2);
+        base.OnModelCreating(modelBuilder);
+
+        modelBuilder.ApplyConfigurationsFromAssembly(
+            typeof(OrderDbContext).Assembly);
     }
 }
