@@ -3,8 +3,14 @@ using Orders.Application.Common.Models;
 
 namespace Orders.Application.Common.Validation;
 
+/// <summary>
+/// Проверяет номер страницы, её размер и допустимость смещения записей.
+/// </summary>
 public class PaginatedRequestValidator : BaseValidator<PaginatedRequest>
 {
+    /// <summary>
+    /// Инициализирует новый экземпляр класса <see cref="PaginatedRequestValidator"/>.
+    /// </summary>
     public PaginatedRequestValidator()
     {
         RuleFor(request => request.Page)
