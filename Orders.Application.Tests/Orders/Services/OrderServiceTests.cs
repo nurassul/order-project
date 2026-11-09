@@ -1,4 +1,5 @@
 ﻿using FluentAssertions;
+using FluentValidation;
 using NSubstitute;
 using Orders.Application.Common.Validation;
 using Orders.Application.Orders.Models;
@@ -64,10 +65,57 @@ public class OrderServiceTests
         res.OrderId.Should()
             .NotBe(Guid.Empty);
 
-        _orderRepository.Received(1).Add(Arg.Is<Order>(
-            o => o.OrderId == res.OrderId &&
-                 o.CustomerName == order.CustomerName &&
-                 o.CustomerEmail == order.CustomerEmail &&
-                 o.TotalAmount == order.TotalAmount));
+        _orderRepository.Received(1).Add(Arg.Is<Order>(o => o.OrderId == res.OrderId &&
+                                                            o.CustomerName == order.CustomerName &&
+                                                            o.CustomerEmail == order.CustomerEmail &&
+                                                            o.TotalAmount == order.TotalAmount));
     }
+
+
+    /// <summary>
+    /// Проверяет, что невалидный заказ вызывает ошибку валидации без обращения к добавлению и сохранению.
+    /// </summary>
+    [Fact]
+    public async Task CreateOrderAsyncWithInvalidRequestDoesNotSaveOrder()
+    {
+        var order = new OrderUpsertModel
+        {
+            CustomerName = "Test",
+            CustomerEmail = "test@mail.com",
+            TotalAmount = 0,
+        };
+
+        Func<Task> action = () => _orderService.CreateOrderAsync(order, CancellationToken.None);
+
+        await action.Should()
+            .ThrowAsync<ValidationException>();
+
+        _orderRepository.DidNotReceive().Add(Arg.Any<Order>());
+        await _orderRepository.DidNotReceive().SaveChangesAsync(Arg.Any<CancellationToken>());
+    }
+
+
+    /// <summary>
+    ///
+    /// </summary>
+    [Fact]
+    public async Task DeleteNotExistingOrder()
+    {
+        var orderId = Guid.NewGuid();
+
+        _orderRepository
+            .GetByIdAsync(orderId, CancellationToken.None)
+            .Returns(Task.FromResult<Order?>(null));
+
+        var res = await _orderService.DeleteOrderAsync(orderId, CancellationToken.None);
+
+        res.Should()
+            .BeFalse();
+
+        _orderRepository.DidNotReceive().Remove(Arg.Any<Order>());
+        await _orderRepository.DidNotReceive().SaveChangesAsync(Arg.Any<CancellationToken>());
+    }
+
+
+
 }
