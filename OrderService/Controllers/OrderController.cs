@@ -1,61 +1,65 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using OrderService.Contracts;
-using OrderService.Models;
-using OrderService.Services;
+using Orders.Application.Common.Models;
+using Orders.Application.Orders.Models;
+using Orders.Application.Orders.Services;
 
 namespace OrderService.Controllers;
-
 
 [ApiController]
 [Route("api/orders")]
 public class OrderController : ControllerBase
 {
-
     private readonly IOrderService _orderService;
-
     public OrderController(IOrderService orderService)
     {
         _orderService = orderService;
     }
 
     [HttpGet]
-    public async Task<ActionResult<List<Order>>> GetAll()
+    public async Task<ActionResult<PaginatedResult<OrderViewModel>>> GetAll(
+        [FromQuery] PaginatedRequest request,
+        CancellationToken cancellationToken)
     {
-        var orders = await _orderService.GetAllAsync();
+        var orders = await _orderService.GetAllAsync(request, cancellationToken);
 
         return Ok(orders);
     }
-    
+
     [HttpGet("{id:guid}")]
-    public async Task<ActionResult<Order>> GetOrderById(Guid id)
+    public async Task<ActionResult<OrderViewModel>> GetOrderById(
+        Guid id,
+        CancellationToken cancellationToken)
     {
-        var order = await _orderService.GetOrderByIdAsync(id);
+        var order = await _orderService.GetOrderByIdAsync(id, cancellationToken);
 
         if (order is null)
         {
             return NotFound();
         }
-        
+
         return Ok(order);
     }
-    
+
     [HttpPost]
-    public async Task<ActionResult<Order>> CreateOrder(
-        [FromBody] CreateOrderRequest request)
+    public async Task<ActionResult<OrderViewModel>> CreateOrder(
+        [FromBody] OrderUpsertModel request,
+        CancellationToken cancellationToken)
     {
-        var order = await _orderService.CreateOrderAsync(request);
+        var order = await _orderService.CreateOrderAsync(request, cancellationToken);
 
         return CreatedAtAction(
             nameof(GetOrderById),
             new { id = order.OrderId },
             order);
     }
-    
+
     [HttpPut("{id:guid}")]
-    public async Task<ActionResult<Order>> UpdateOrderById(
-        [FromBody] UpdateOrderRequest request, Guid id)
+    public async Task<ActionResult<OrderViewModel>> UpdateOrderById(
+        Guid id,
+        [FromBody] OrderUpsertModel request,
+        CancellationToken cancellationToken)
     {
-        var order = await _orderService.UpdateOrderAsync(id, request);
+        var order = await _orderService.UpdateOrderAsync(id, request, cancellationToken);
 
         if (order is null)
         {
@@ -66,9 +70,11 @@ public class OrderController : ControllerBase
     }
 
     [HttpDelete("{id:guid}")]
-    public async Task<IActionResult> DeleteOrderById(Guid id)
+    public async Task<IActionResult> DeleteOrderById(
+        Guid id,
+        CancellationToken cancellationToken)
     {
-        var deleted = await _orderService.DeleteOrderAsync(id);
+        var deleted = await _orderService.DeleteOrderAsync(id, cancellationToken);
 
         if (!deleted)
         {
@@ -76,6 +82,5 @@ public class OrderController : ControllerBase
         }
 
         return NoContent();
-    } 
-    
+    }
 }

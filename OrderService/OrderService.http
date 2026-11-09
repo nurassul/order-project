@@ -1,6 +1,15 @@
-@OrderService_HostAddress = http://localhost:5265
+@host = http://localhost:8989
 
-GET {{OrderService_HostAddress}}/weatherforecast/
+### Список заказов
+GET {{host}}/api/orders
 Accept: application/json
 
-###
+### Создать заказ
+POST {{host}}/api/orders
+Content-Type: application/json
+
+{
+  "customerName": "Test User",
+  "customerEmail": "test@example.com",
+  "totalAmount": 15000
+}
