@@ -4,8 +4,17 @@ using Orders.Application.Orders.Models;
 
 namespace Orders.Application.Orders.Validators;
 
+
+
+/// <summary>
+/// Проверяет данные для создания и обновления заказа:
+/// имя клиента, адрес электронной почты и сумму.
+/// </summary>
 public class OrderUpsertModelValidator : BaseValidator<OrderUpsertModel>
 {
+    /// <summary>
+    /// Инициализирует новый экземпляр класса <see cref="OrderUpsertModelValidator"/>.
+    /// </summary>
     public OrderUpsertModelValidator()
     {
         RuleFor(order => order.CustomerName)

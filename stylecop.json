@@ -1,0 +1,10 @@
+﻿{
+  "settings": {
+    "orderingRules": {
+      "usingDirectivesPlacement": "outsideNamespace"
+    },
+    "documentationRules": {
+      "documentationCulture": "ru-RU"
+    }
+  }
+}

@@ -6,12 +6,22 @@ using Orders.Domain.Orders;
 
 namespace Orders.Application.Orders.Services;
 
+
+/// <summary>
+/// Выполняет сценарии работы с заказами с использованием репозитория.
+/// </summary>
 public class OrderService : IOrderService
 {
     private readonly IOrderRepository _repository;
     private readonly IValidator<OrderUpsertModel> _validator;
     private readonly IValidator<PaginatedRequest> _paginationValidator;
 
+    /// <summary>
+    /// Инициализирует новый экземпляр класса <see cref="OrderService"/>.
+    /// </summary>
+    /// <param name="repository">Репозиторий заказов.</param>
+    /// <param name="validator">Валидатор данных создания и обновления заказа.</param>
+    /// <param name="paginationValidator">Валидатор параметров страницы.</param>
     public OrderService(IOrderRepository repository, IValidator<OrderUpsertModel> validator, IValidator<PaginatedRequest> paginationValidator)
     {
         _repository = repository;
@@ -19,6 +29,7 @@ public class OrderService : IOrderService
         _paginationValidator = paginationValidator;
     }
 
+    /// <inheritdoc />
     public async Task<PaginatedResult<OrderViewModel>> GetAllAsync(
         PaginatedRequest request,
         CancellationToken cancellationToken)
@@ -28,6 +39,8 @@ public class OrderService : IOrderService
 
         return await _repository.GetAllAsync(request, cancellationToken);
     }
+
+    /// <inheritdoc />
     public async Task<OrderViewModel?> GetOrderByIdAsync(
         Guid id,
         CancellationToken cancellationToken)
@@ -37,6 +50,7 @@ public class OrderService : IOrderService
         return order is null ? null : ToViewModel(order);
     }
 
+    /// <inheritdoc />
     public async Task<OrderViewModel> CreateOrderAsync(
         OrderUpsertModel request,
         CancellationToken cancellationToken)
@@ -58,6 +72,7 @@ public class OrderService : IOrderService
         return ToViewModel(order);
     }
 
+    /// <inheritdoc />
     public async Task<bool> DeleteOrderAsync(
         Guid id,
         CancellationToken cancellationToken)
@@ -75,6 +90,7 @@ public class OrderService : IOrderService
         return true;
     }
 
+    /// <inheritdoc />
     public async Task<OrderViewModel?> UpdateOrderAsync(
         Guid id,
         OrderUpsertModel request,
