@@ -27,7 +27,7 @@
 
    `.env` не коммитится. Без заполненных значений Compose не запустится.
 
-2. Собрать и запустить API и базу:
+2. Собрать и запустить gateway, API и базу:
    ```bash
    docker compose up --build -d
    ```
@@ -35,14 +35,14 @@
 3. Посмотреть состояние и логи:
    ```bash
    docker compose ps
-   docker compose logs -f orderservice
+   docker compose logs -f api-gateway orderservice
    ```
 
    Дождаться сообщения `Now listening on`. Миграции применяются автоматически при старте API.
 
 4. Открыть [список заказов](http://localhost:8989/api/orders). На пустой базе вернётся страница с пустым `items`.
 
-API доступен на `http://localhost:8989`. Внутри контейнера используется порт `8080`.
+Запросы идут через gateway на `http://localhost:8989`. Он пересылает их в `orderservice:8080` внутри Docker. У Orders.Api нет опубликованного порта на компьютере. Для такого режима gateway запускается через Compose, а не отдельно в Rider.
 PostgreSQL доступен с компьютера на `localhost:5433`, база `db_orders`, логин и пароль — из `.env`.
 
 Если запуск не получается:
@@ -68,6 +68,7 @@ dotnet test Orders.Application.Tests
 
 ## Структура
 
+- `ApiGateway` — маршрутизация запросов через Ocelot.
 - `Orders.Api` — контроллеры, DI и обработка ошибок.
 - `Orders.Application` — сервисы, модели запросов и ответов, валидация, интерфейсы репозиториев.
 - `Orders.Domain` — сущность заказа.
