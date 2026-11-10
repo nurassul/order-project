@@ -1,9 +1,9 @@
-﻿services:
+services:
   orderservice:
     image: orderservice
     build:
       context: .
-      dockerfile: OrderService/Dockerfile
+      dockerfile: Orders.Api/Dockerfile
     environment:
       ASPNETCORE_ENVIRONMENT: Development
       ConnectionStrings__OrdersDb: "Host=db;Port=5432;Database=db_orders;Username=${DB_USERNAME:?Set DB_USERNAME};Password=${DB_PASSWORD:?Set DB_PASSWORD}"
@@ -39,3 +39,4 @@ networks:
     
 volumes:
   data_db_pr:
+

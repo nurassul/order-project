@@ -355,7 +355,7 @@ public class OrderServiceTests
         var request = new PaginatedRequest
         {
             Page = 2,
-            PageSize = 10,
+            PageSize = 1,
         };
 
         var expectedPage = new PaginatedResult<OrderViewModel>
