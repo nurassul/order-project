@@ -1,8 +1,8 @@
-﻿using FluentValidation;
+using FluentValidation;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 
-namespace OrderService.ExceptionHandler;
+namespace Orders.Api.ExceptionsHandler;
 
 
 /// <summary>
