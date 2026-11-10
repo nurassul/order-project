@@ -1,0 +1,5 @@
+@ApiGateway_HostAddress = http://localhost:8989
+
+### Список заказов через gateway в Docker Compose
+GET {{ApiGateway_HostAddress}}/api/orders?page=1&pageSize=10
+Accept: application/json
