@@ -1,5 +1,6 @@
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
+using Orders.Api.ExceptionsHandler;
 using Orders.Application.Common.Models;
 using Orders.Application.Common.Validation;
 using Orders.Application.Orders.Models;
@@ -8,7 +9,6 @@ using Orders.Application.Orders.Services;
 using Orders.Application.Orders.Validators;
 using Orders.Infrastructure.Orders.Repositories;
 using Orders.Infrastructure.Persistence;
-using OrderService.ExceptionHandler;
 
 var builder = WebApplication.CreateBuilder(args);
 

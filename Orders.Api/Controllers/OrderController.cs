@@ -1,9 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Orders.Application.Common.Models;
 using Orders.Application.Orders.Models;
 using Orders.Application.Orders.Services;
 
-namespace OrderService.Controllers;
+namespace Orders.Api.Controllers;
 
 /// <summary>
 /// Предоставляет HTTP API для работы с заказами.
