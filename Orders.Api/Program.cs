@@ -19,7 +19,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 
 builder.Services.AddOpenApi();
-builder.Services.AddScoped<IOrderService, Orders.Application.Orders.Services.OrderService>();
+builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<IValidator<OrderUpsertModel>, OrderUpsertModelValidator>();
 builder.Services.AddScoped<IValidator<PaginatedRequest>, PaginatedRequestValidator>();
@@ -47,6 +47,15 @@ builder.Services.AddMassTransit(x =>
                 host.Password(
                     builder.Configuration["RabbitMq:Password"]!);
             });
+    });
+
+    x.AddEntityFrameworkOutbox<OrderDbContext>(o =>
+    {
+        o.UsePostgres();
+
+        o.UseBusOutbox();
+
+        o.QueryDelay = TimeSpan.FromSeconds(1);
     });
 });
 

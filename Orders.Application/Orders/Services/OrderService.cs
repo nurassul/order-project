@@ -8,7 +8,6 @@ using Orders.Domain.Orders;
 
 namespace Orders.Application.Orders.Services;
 
-
 /// <summary>
 /// Выполняет сценарии работы с заказами с использованием репозитория.
 /// </summary>
@@ -25,7 +24,8 @@ public class OrderService : IOrderService
     /// <param name="repository">Репозиторий заказов.</param>
     /// <param name="validator">Валидатор данных создания и обновления заказа.</param>
     /// <param name="paginationValidator">Валидатор параметров страницы.</param>
-    public OrderService(IOrderRepository repository, IValidator<OrderUpsertModel> validator, IValidator<PaginatedRequest> paginationValidator, IOrderEventPublisher eventPublisher)
+    public OrderService(IOrderRepository repository, IValidator<OrderUpsertModel> validator,
+        IValidator<PaginatedRequest> paginationValidator, IOrderEventPublisher eventPublisher)
     {
         _repository = repository;
         _validator = validator;
@@ -71,8 +71,6 @@ public class OrderService : IOrderService
         };
 
         _repository.Add(order);
-        await _repository.SaveChangesAsync(cancellationToken);
-
         await _eventPublisher.PublishOrderCreatedAsync(
             new OrderCreated
             {
@@ -83,6 +81,9 @@ public class OrderService : IOrderService
                 CreatedAt = order.CreatedAt,
             },
             cancellationToken);
+
+        await _repository.SaveChangesAsync(cancellationToken);
+
 
         return ToViewModel(order);
     }

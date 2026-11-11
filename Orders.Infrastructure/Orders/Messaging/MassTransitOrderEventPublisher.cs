@@ -39,7 +39,7 @@ public class MassTransitOrderEventPublisher : IOrderEventPublisher
         await _publishEndpoint.Publish(message, cancellationToken);
 
         _logger.LogInformation(
-            "Опубликовано событие OrderCreated для заказа {OrderId}",
+            "Подготовлено событие OrderCreated для заказа {OrderId}",
             message.OrderId
         );
     }
