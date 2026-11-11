@@ -8,8 +8,13 @@ services:
       ASPNETCORE_ENVIRONMENT: Development
       ConnectionStrings__OrdersDb: "Host=db;Port=5432;Database=db_orders;Username=${DB_USERNAME:?Set DB_USERNAME};Password=${DB_PASSWORD:?Set DB_PASSWORD}"
       Database__ApplyMigrations: "true"
+      RabbitMQ__Host: rabbitmq
+      RabbitMQ__Username: ${RABBITMQ_USERNAME}
+      RabbitMQ__Password: ${RABBITMQ_PASSWORD}
     depends_on:
       db:
+        condition: service_healthy
+      rabbitmq:
         condition: service_healthy
     networks:
       - app-network
@@ -28,7 +33,27 @@ services:
         condition: service_healthy
     networks:
       - app-network
-      
+    
+  rabbitmq:
+    image: rabbitmq:4-management
+    hostname: orderdelivery-rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USERNAME}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD}
+    ports:
+      - "127.0.0.1:5672:5672"
+      - "127.0.0.1:15672:15672"
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    networks:
+      - app-network
+    healthcheck:
+      test: [ "CMD", "rabbitmq-diagnostics", "-q", "ping" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+  
   db:
     image: postgres:15-alpine
     environment:
@@ -52,4 +77,5 @@ networks:
     
 volumes:
   data_db_pr:
+  rabbitmq_data:
 

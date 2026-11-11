@@ -1,7 +1,9 @@
 ﻿using FluentValidation;
 using Orders.Application.Common.Models;
+using Orders.Application.Orders.Messaging;
 using Orders.Application.Orders.Models;
 using Orders.Application.Orders.Repositories;
+using Orders.Contracts.Orders;
 using Orders.Domain.Orders;
 
 namespace Orders.Application.Orders.Services;
@@ -15,6 +17,7 @@ public class OrderService : IOrderService
     private readonly IOrderRepository _repository;
     private readonly IValidator<OrderUpsertModel> _validator;
     private readonly IValidator<PaginatedRequest> _paginationValidator;
+    private readonly IOrderEventPublisher _eventPublisher;
 
     /// <summary>
     /// Инициализирует новый экземпляр класса <see cref="OrderService"/>.
@@ -22,11 +25,12 @@ public class OrderService : IOrderService
     /// <param name="repository">Репозиторий заказов.</param>
     /// <param name="validator">Валидатор данных создания и обновления заказа.</param>
     /// <param name="paginationValidator">Валидатор параметров страницы.</param>
-    public OrderService(IOrderRepository repository, IValidator<OrderUpsertModel> validator, IValidator<PaginatedRequest> paginationValidator)
+    public OrderService(IOrderRepository repository, IValidator<OrderUpsertModel> validator, IValidator<PaginatedRequest> paginationValidator, IOrderEventPublisher eventPublisher)
     {
         _repository = repository;
         _validator = validator;
         _paginationValidator = paginationValidator;
+        _eventPublisher = eventPublisher;
     }
 
     /// <inheritdoc />
@@ -68,6 +72,17 @@ public class OrderService : IOrderService
 
         _repository.Add(order);
         await _repository.SaveChangesAsync(cancellationToken);
+
+        await _eventPublisher.PublishOrderCreatedAsync(
+            new OrderCreated
+            {
+                OrderId = order.OrderId,
+                CustomerName = order.CustomerName,
+                CustomerEmail = order.CustomerEmail,
+                TotalAmount = order.TotalAmount,
+                CreatedAt = order.CreatedAt,
+            },
+            cancellationToken);
 
         return ToViewModel(order);
     }
@@ -123,7 +138,7 @@ public class OrderService : IOrderService
             CustomerName = order.CustomerName,
             CustomerEmail = order.CustomerEmail,
             TotalAmount = order.TotalAmount,
-            CreatedAt = order.CreatedAt
+            CreatedAt = order.CreatedAt,
         };
     }
 }

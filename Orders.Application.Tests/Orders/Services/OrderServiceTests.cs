@@ -3,6 +3,7 @@ using FluentValidation;
 using NSubstitute;
 using Orders.Application.Common.Models;
 using Orders.Application.Common.Validation;
+using Orders.Application.Orders.Messaging;
 using Orders.Application.Orders.Models;
 using Orders.Application.Orders.Repositories;
 using Orders.Application.Orders.Services;
@@ -32,7 +33,8 @@ public class OrderServiceTests
         _orderService = new OrderService(
             repository: _orderRepository,
             validator: new OrderUpsertModelValidator(),
-            paginationValidator: new PaginatedRequestValidator()
+            paginationValidator: new PaginatedRequestValidator(),
+            eventPublisher: Substitute.For<IOrderEventPublisher>()
         );
     }
 
@@ -399,7 +401,6 @@ public class OrderServiceTests
         };
 
 
-
         Func<Task> action = () => _orderService.GetAllAsync(request, CancellationToken.None);
 
         await action.Should()
@@ -407,11 +408,4 @@ public class OrderServiceTests
 
         await _orderRepository.DidNotReceive().GetAllAsync(Arg.Any<PaginatedRequest>(), Arg.Any<CancellationToken>());
     }
-
-
-
-
-
-
-
 }
