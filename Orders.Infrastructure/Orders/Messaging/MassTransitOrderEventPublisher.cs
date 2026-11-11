@@ -6,7 +6,7 @@ using Orders.Contracts.Orders;
 namespace Orders.Infrastructure.Orders.Messaging;
 
 /// <summary>
-///
+/// Публикация события в RabbitMQ
 /// </summary>
 public class MassTransitOrderEventPublisher : IOrderEventPublisher
 {
@@ -20,7 +20,8 @@ public class MassTransitOrderEventPublisher : IOrderEventPublisher
     /// </summary>
     /// <param name="publishEndpoint"></param>
     /// <param name="logger"></param>
-    public MassTransitOrderEventPublisher(IPublishEndpoint publishEndpoint,
+    public MassTransitOrderEventPublisher(
+        IPublishEndpoint publishEndpoint,
         ILogger<MassTransitOrderEventPublisher> logger)
     {
         _publishEndpoint = publishEndpoint;
@@ -28,7 +29,7 @@ public class MassTransitOrderEventPublisher : IOrderEventPublisher
     }
 
     /// <summary>
-    ///
+    /// Публикация события в брокер и логирование события.
     /// </summary>
     /// <param name="message"></param>
     /// <param name="cancellationToken"></param>

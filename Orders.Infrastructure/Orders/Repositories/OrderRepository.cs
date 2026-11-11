@@ -56,7 +56,8 @@ public class OrderRepository : IOrderRepository
         CancellationToken cancellationToken)
     {
         return _dbContext.Orders
-            .FirstOrDefaultAsync(order => order.OrderId == id,
+            .FirstOrDefaultAsync(
+                order => order.OrderId == id,
                 cancellationToken);
     }
 
