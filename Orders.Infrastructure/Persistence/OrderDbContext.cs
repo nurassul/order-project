@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using MassTransit;
+using Microsoft.EntityFrameworkCore;
 using Orders.Domain.Orders;
 
 namespace Orders.Infrastructure.Persistence;
@@ -20,7 +21,7 @@ public class OrderDbContext : DbContext
     }
 
     /// <summary>
-    /// Получает набор заказов для выполнения запросов и изменения данных.
+    /// Возвращает получает набор заказов для выполнения запросов и изменения данных.
     /// </summary>
     public DbSet<Order> Orders => Set<Order>();
 
@@ -32,5 +33,9 @@ public class OrderDbContext : DbContext
 
         modelBuilder.ApplyConfigurationsFromAssembly(
             typeof(OrderDbContext).Assembly);
+
+        modelBuilder.AddInboxStateEntity();
+        modelBuilder.AddOutboxMessageEntity();
+        modelBuilder.AddOutboxStateEntity();
     }
 }

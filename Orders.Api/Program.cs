@@ -1,12 +1,15 @@
 using FluentValidation;
+using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using Orders.Api.ExceptionsHandler;
 using Orders.Application.Common.Models;
 using Orders.Application.Common.Validation;
+using Orders.Application.Orders.Messaging;
 using Orders.Application.Orders.Models;
 using Orders.Application.Orders.Repositories;
 using Orders.Application.Orders.Services;
 using Orders.Application.Orders.Validators;
+using Orders.Infrastructure.Orders.Messaging;
 using Orders.Infrastructure.Orders.Repositories;
 using Orders.Infrastructure.Persistence;
 
@@ -16,10 +19,11 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 
 builder.Services.AddOpenApi();
-builder.Services.AddScoped<IOrderService, Orders.Application.Orders.Services.OrderService>();
+builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<IValidator<OrderUpsertModel>, OrderUpsertModelValidator>();
 builder.Services.AddScoped<IValidator<PaginatedRequest>, PaginatedRequestValidator>();
+builder.Services.AddScoped<IOrderEventPublisher, MassTransitOrderEventPublisher>();
 
 builder.Services.AddDbContext<OrderDbContext>(options =>
     options.UseNpgsql(
@@ -27,6 +31,33 @@ builder.Services.AddDbContext<OrderDbContext>(options =>
 
 builder.Services.AddExceptionHandler<ValidationExceptionHandler>();
 builder.Services.AddProblemDetails();
+
+builder.Services.AddMassTransit(x =>
+{
+    x.UsingRabbitMq((context, cfg) =>
+    {
+        cfg.Host(
+            builder.Configuration["RabbitMq:Host"]!,
+            "/",
+            host =>
+            {
+                host.Username(
+                    builder.Configuration["RabbitMq:Username"]!);
+
+                host.Password(
+                    builder.Configuration["RabbitMq:Password"]!);
+            });
+    });
+
+    x.AddEntityFrameworkOutbox<OrderDbContext>(o =>
+    {
+        o.UsePostgres();
+
+        o.UseBusOutbox();
+
+        o.QueryDelay = TimeSpan.FromSeconds(1);
+    });
+});
 
 var app = builder.Build();
 
