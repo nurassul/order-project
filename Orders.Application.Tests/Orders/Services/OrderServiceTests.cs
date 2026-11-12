@@ -1,9 +1,9 @@
-﻿using FluentAssertions;
+﻿using Common.Abstractions;
+using FluentAssertions;
 using FluentValidation;
 using NSubstitute;
 using Orders.Application.Common.Models;
 using Orders.Application.Common.Validation;
-using Orders.Application.Orders.Messaging;
 using Orders.Application.Orders.Models;
 using Orders.Application.Orders.Repositories;
 using Orders.Application.Orders.Services;
@@ -22,7 +22,7 @@ public class OrderServiceTests
 
     private readonly OrderService _orderService;
 
-    private readonly IOrderEventPublisher _eventPublisher;
+    private readonly IEventPublisher _eventPublisher;
 
 
     /// <summary>
@@ -33,7 +33,7 @@ public class OrderServiceTests
     public OrderServiceTests()
     {
         _orderRepository = Substitute.For<IOrderRepository>();
-        _eventPublisher = Substitute.For<IOrderEventPublisher>();
+        _eventPublisher = Substitute.For<IEventPublisher>();
         _orderService = new OrderService(
             repository: _orderRepository,
             validator: new OrderUpsertModelValidator(),
@@ -76,7 +76,7 @@ public class OrderServiceTests
                                                             o.CustomerEmail == order.CustomerEmail &&
                                                             o.TotalAmount == order.TotalAmount));
 
-        await _eventPublisher.Received(1).PublishOrderCreatedAsync(
+        await _eventPublisher.Received(1).PublishAsync(
             Arg.Is<OrderCreated>(m => m.OrderId == res.OrderId &&
                                       m.CustomerName == order.CustomerName &&
                                       m.CustomerEmail == order.CustomerEmail &&
@@ -86,7 +86,7 @@ public class OrderServiceTests
 
         Received.InOrder(() =>
         {
-            _eventPublisher.PublishOrderCreatedAsync(Arg.Any<OrderCreated>(), CancellationToken.None);
+            _eventPublisher.PublishAsync(Arg.Any<OrderCreated>(), CancellationToken.None);
             _orderRepository.SaveChangesAsync(CancellationToken.None);
         });
     }
@@ -113,7 +113,7 @@ public class OrderServiceTests
         _orderRepository.DidNotReceive().Add(Arg.Any<Order>());
         await _orderRepository.DidNotReceive().SaveChangesAsync(Arg.Any<CancellationToken>());
 
-        await _eventPublisher.DidNotReceive().PublishOrderCreatedAsync(
+        await _eventPublisher.DidNotReceive().PublishAsync(
             Arg.Any<OrderCreated>(), Arg.Any<CancellationToken>());
     }
 

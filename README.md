@@ -122,8 +122,10 @@ dotnet test Orders.Application.Tests
 - `Orders.Api` — контроллеры, DI и обработка ошибок.
 - `Orders.Application` — сервисы, модели запросов и ответов, валидация, интерфейсы репозиториев.
 - `Orders.Domain` — сущность заказа.
-- `Orders.Infrastructure` — EF Core, репозиторий, миграции и публикация событий через MassTransit.
+- `Orders.Infrastructure` — EF Core, репозиторий, миграции и модели хранения Outbox.
 - `Orders.Contracts` — общие контракты событий, сейчас `OrderCreated`.
 - `Orders.Application.Tests` — модульные тесты сервиса.
+- `Common.Abstractions` — общий интерфейс публикации событий.
+- `Common.Messaging` — реализация publisher через MassTransit.
 
 Примеры API: [docs/stage-1.md](docs/stage-1.md).
