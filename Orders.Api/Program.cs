@@ -1,15 +1,15 @@
+using Common.Abstractions;
+using Common.Messaging;
 using FluentValidation;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using Orders.Api.ExceptionsHandler;
 using Orders.Application.Common.Models;
 using Orders.Application.Common.Validation;
-using Orders.Application.Orders.Messaging;
 using Orders.Application.Orders.Models;
 using Orders.Application.Orders.Repositories;
 using Orders.Application.Orders.Services;
 using Orders.Application.Orders.Validators;
-using Orders.Infrastructure.Orders.Messaging;
 using Orders.Infrastructure.Orders.Repositories;
 using Orders.Infrastructure.Persistence;
 
@@ -23,7 +23,7 @@ builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<IValidator<OrderUpsertModel>, OrderUpsertModelValidator>();
 builder.Services.AddScoped<IValidator<PaginatedRequest>, PaginatedRequestValidator>();
-builder.Services.AddScoped<IOrderEventPublisher, MassTransitOrderEventPublisher>();
+builder.Services.AddScoped<IEventPublisher, MassTransitEventPublisher>();
 
 builder.Services.AddDbContext<OrderDbContext>(options =>
     options.UseNpgsql(

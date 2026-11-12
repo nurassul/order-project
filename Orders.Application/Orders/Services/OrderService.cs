@@ -1,6 +1,6 @@
-﻿using FluentValidation;
+﻿using Common.Abstractions;
+using FluentValidation;
 using Orders.Application.Common.Models;
-using Orders.Application.Orders.Messaging;
 using Orders.Application.Orders.Models;
 using Orders.Application.Orders.Repositories;
 using Orders.Contracts.Orders;
@@ -16,7 +16,7 @@ public class OrderService : IOrderService
     private readonly IOrderRepository _repository;
     private readonly IValidator<OrderUpsertModel> _validator;
     private readonly IValidator<PaginatedRequest> _paginationValidator;
-    private readonly IOrderEventPublisher _eventPublisher;
+    private readonly IEventPublisher _eventPublisher;
 
     /// <summary>
     /// Инициализирует новый экземпляр класса <see cref="OrderService"/>.
@@ -24,8 +24,12 @@ public class OrderService : IOrderService
     /// <param name="repository">Репозиторий заказов.</param>
     /// <param name="validator">Валидатор данных создания и обновления заказа.</param>
     /// <param name="paginationValidator">Валидатор параметров страницы.</param>
-    public OrderService(IOrderRepository repository, IValidator<OrderUpsertModel> validator,
-        IValidator<PaginatedRequest> paginationValidator, IOrderEventPublisher eventPublisher)
+    /// <param name="eventPublisher">Общий публикатор событий.</param>
+    public OrderService(
+        IOrderRepository repository,
+        IValidator<OrderUpsertModel> validator,
+        IValidator<PaginatedRequest> paginationValidator,
+        IEventPublisher eventPublisher)
     {
         _repository = repository;
         _validator = validator;
@@ -71,7 +75,7 @@ public class OrderService : IOrderService
         };
 
         _repository.Add(order);
-        await _eventPublisher.PublishOrderCreatedAsync(
+        await _eventPublisher.PublishAsync(
             new OrderCreated
             {
                 OrderId = order.OrderId,
