@@ -1,13 +1,33 @@
 services:
   
-  orderservice:
-    image: orderservice
+  order-service:
+    image: order-service
     build:
       context: .
       dockerfile: Orders.Api/Dockerfile
     environment:
       ASPNETCORE_ENVIRONMENT: Development
       ConnectionStrings__OrdersDb: "Host=db;Port=5432;Database=db_orders;Username=${DB_USERNAME:?Set DB_USERNAME};Password=${DB_PASSWORD:?Set DB_PASSWORD}"
+      Database__ApplyMigrations: "true"
+      RabbitMQ__Host: rabbitmq
+      RabbitMQ__Username: ${RABBITMQ_USERNAME}
+      RabbitMQ__Password: ${RABBITMQ_PASSWORD}
+    depends_on:
+      db:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    networks:
+      - app-network
+    
+  delivery-service:
+    image: delivery-service
+    build:
+      context: .
+      dockerfile: Delivery.Api/Dockerfile
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__DeliveryDb: "Host=db;Port=5432;Database=db_delivery;Username=${DB_USERNAME:?Set DB_USERNAME};Password=${DB_PASSWORD:?Set DB_PASSWORD}"
       Database__ApplyMigrations: "true"
       RabbitMQ__Host: rabbitmq
       RabbitMQ__Username: ${RABBITMQ_USERNAME}
@@ -32,7 +52,7 @@ services:
     depends_on:
       db:
         condition: service_healthy
-      orderservice:
+      order-service:
         condition: service_started
     networks:
       - app-network

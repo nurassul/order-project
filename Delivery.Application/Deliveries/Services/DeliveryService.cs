@@ -1,11 +1,11 @@
-﻿using Delivery.Application.Deliveries.Models;
+using Delivery.Application.Deliveries.Models;
 using Delivery.Application.Deliveries.Repositories;
 using Delivery.Domain.Models.Enums;
 
 namespace Delivery.Application.Deliveries.Services;
 
 /// <summary>
-///
+/// Выполняет сценарии создания и чтения доставок через репозиторий.
 /// </summary>
 public class DeliveryService : IDeliveryService
 {
@@ -15,7 +15,7 @@ public class DeliveryService : IDeliveryService
     /// <summary>
     /// Инициализирует новый экземпляр класса <see cref="DeliveryService"/>.
     /// </summary>
-    /// <param name="deliveryRepository"></param>
+    /// <param name="deliveryRepository">Репозиторий доставок.</param>
     public DeliveryService(IDeliveryRepository deliveryRepository)
     {
         _deliveryRepository = deliveryRepository;

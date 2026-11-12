@@ -1,11 +1,11 @@
-﻿using Delivery.Application.Deliveries.Repositories;
+using Delivery.Application.Deliveries.Repositories;
 using Delivery.Infrastructure.Persistance;
 using Microsoft.EntityFrameworkCore;
 
 namespace Delivery.Infrastructure.Deliveries.Repositories;
 
 /// <summary>
-///
+/// Реализует чтение и сохранение доставок с использованием Entity Framework Core.
 /// </summary>
 public class DeliveryRepository : IDeliveryRepository
 {
@@ -15,7 +15,7 @@ public class DeliveryRepository : IDeliveryRepository
     /// <summary>
     /// Инициализирует новый экземпляр класса <see cref="DeliveryRepository"/>.
     /// </summary>
-    /// <param name="dbContext"></param>
+    /// <param name="dbContext">Контекст базы данных доставок.</param>
     public DeliveryRepository(DeliveryDbContext dbContext)
     {
         _dbContext = dbContext;

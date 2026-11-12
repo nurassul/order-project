@@ -1,9 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 
 namespace Delivery.Infrastructure.Persistance;
 
 /// <summary>
-///
+/// Предоставляет доступ к базе данных доставок.
 /// </summary>
 public class DeliveryDbContext : DbContext
 {
@@ -17,7 +17,7 @@ public class DeliveryDbContext : DbContext
     }
 
     /// <summary>
-    /// Возвращает получает набор доставок для выполнения запросов и изменения данных.
+    /// Возвращает набор доставок для выполнения запросов и изменения данных.
     /// </summary>
     public DbSet<Domain.Models.Delivery> Deliveries => Set<Domain.Models.Delivery>();
 

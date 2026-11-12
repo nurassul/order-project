@@ -1,17 +1,17 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Delivery.Infrastructure.Persistance.Configurations;
 
 /// <summary>
-///
+/// Настраивает таблицу доставок, ключи и ограничения полей.
 /// </summary>
 public class DeliveryConfiguration : IEntityTypeConfiguration<Domain.Models.Delivery>
 {
     /// <summary>
-    ///
+    /// Задаёт правила хранения сущности доставки.
     /// </summary>
-    /// <param name="builder"></param>
+    /// <param name="builder">Объект настройки сущности доставки.</param>
     public void Configure(EntityTypeBuilder<Domain.Models.Delivery> builder)
     {
         builder.ToTable("Deliveries");
