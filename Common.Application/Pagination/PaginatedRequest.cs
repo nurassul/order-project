@@ -1,4 +1,4 @@
-﻿namespace Orders.Application.Common.Models;
+namespace Common.Application.Pagination;
 
 /// <summary>
 /// Содержит параметры постраничного получения данных.
@@ -17,3 +17,4 @@ public class PaginatedRequest
     /// </summary>
     public int PageSize { get; set; } = 10;
 }
+

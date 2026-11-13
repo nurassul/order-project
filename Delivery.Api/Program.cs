@@ -1,8 +1,12 @@
+using Ardalis.Specification;
+using Common.Application.Pagination;
+using Delivery.Api.ExceptionsHandler;
 using Delivery.Application.Deliveries.Repositories;
 using Delivery.Application.Deliveries.Services;
 using Delivery.Infrastructure.Deliveries.Messaging.Consumers;
 using Delivery.Infrastructure.Deliveries.Repositories;
 using Delivery.Infrastructure.Persistance;
+using FluentValidation;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,10 +17,15 @@ builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 builder.Services.AddScoped<IDeliveryService, DeliveryService>();
 builder.Services.AddScoped<IDeliveryRepository, DeliveryRepository>();
+builder.Services.AddScoped<IValidator<PaginatedRequest>, PaginatedRequestValidator>();
 
 builder.Services.AddDbContext<DeliveryDbContext>(options =>
     options.UseNpgsql(
         builder.Configuration.GetConnectionString("DeliveryDb")));
+
+
+builder.Services.AddExceptionHandler<ValidationExceptionHandler>();
+builder.Services.AddProblemDetails();
 
 builder.Services.AddMassTransit(x =>
 {
@@ -47,6 +56,9 @@ builder.Services.AddMassTransit(x =>
 });
 
 var app = builder.Build();
+
+app.UseExceptionHandler();
+
 
 
 if (app.Configuration.GetValue<bool>("Database:ApplyMigrations"))

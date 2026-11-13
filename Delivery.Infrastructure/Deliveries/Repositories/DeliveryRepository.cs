@@ -1,4 +1,8 @@
+using Ardalis.Specification.EntityFrameworkCore;
+using Common.Application.Pagination;
+using Delivery.Application.Deliveries.Models;
 using Delivery.Application.Deliveries.Repositories;
+using Delivery.Application.Deliveries.Specifications;
 using Delivery.Infrastructure.Persistance;
 using Microsoft.EntityFrameworkCore;
 
@@ -43,11 +47,25 @@ public class DeliveryRepository : IDeliveryRepository
 
 
     /// <inheritdoc />
-    public async Task<List<Domain.Models.Delivery>> GetAllAsync(CancellationToken cancellationToken)
+    public async Task<PaginatedResult<DeliveryViewModel>> GetAllAsync(PaginatedRequest request, CancellationToken cancellationToken)
     {
-        return await _dbContext.Deliveries
+        var specification = new DeliveryPageSpec(request);
+
+        var totalCount = await _dbContext.Deliveries
+            .CountAsync(cancellationToken);
+
+        var items = await _dbContext.Deliveries
             .AsNoTracking()
+            .WithSpecification(specification)
             .ToListAsync(cancellationToken);
+
+        return new PaginatedResult<DeliveryViewModel>
+        {
+            Items = items,
+            Page = request.Page,
+            PageSize = request.PageSize,
+            TotalCount = totalCount,
+        };
     }
 
 

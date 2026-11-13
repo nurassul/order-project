@@ -1,7 +1,7 @@
-﻿using FluentValidation;
-using Orders.Application.Common.Models;
+using Common.Application.Validator;
+using FluentValidation;
 
-namespace Orders.Application.Common.Validation;
+namespace Common.Application.Pagination;
 
 /// <summary>
 /// Проверяет номер страницы, её размер и допустимость смещения записей.
@@ -28,3 +28,4 @@ public class PaginatedRequestValidator : BaseValidator<PaginatedRequest>
             .OverridePropertyName(nameof(PaginatedRequest.Page));
     }
 }
+

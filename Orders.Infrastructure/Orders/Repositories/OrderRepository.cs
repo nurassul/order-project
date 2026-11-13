@@ -1,6 +1,6 @@
-﻿using Ardalis.Specification.EntityFrameworkCore;
+using Ardalis.Specification.EntityFrameworkCore;
+using Common.Application.Pagination;
 using Microsoft.EntityFrameworkCore;
-using Orders.Application.Common.Models;
 using Orders.Application.Orders.Models;
 using Orders.Application.Orders.Repositories;
 using Orders.Application.Orders.Specifications;

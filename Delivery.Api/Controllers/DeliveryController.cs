@@ -1,3 +1,4 @@
+using Common.Application.Pagination;
 using Delivery.Application.Deliveries.Models;
 using Delivery.Application.Deliveries.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -48,12 +49,15 @@ public class DeliveryController : ControllerBase
     /// <summary>
     /// Возвращает список доставок.
     /// </summary>
+    /// <param name="request">Номер и размер страницы.</param>
     /// <param name="cancellationToken">Токен отмены запроса.</param>
     /// <returns>Ответ 200 со списком доставок.</returns>
     [HttpGet]
-    public async Task<ActionResult<List<DeliveryViewModel>>> GetAllAsync(CancellationToken cancellationToken)
+    public async Task<ActionResult<PaginatedResult<DeliveryViewModel>>> GetAllAsync(
+        [FromQuery] PaginatedRequest request,
+        CancellationToken cancellationToken)
     {
-        var res = await _deliveryService.GetAllAsync(cancellationToken);
+        var res = await _deliveryService.GetAllAsync(request, cancellationToken);
 
         return Ok(res);
     }

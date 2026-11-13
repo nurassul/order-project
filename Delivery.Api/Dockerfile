@@ -11,6 +11,8 @@ COPY ["Delivery.Application/Delivery.Application.csproj", "Delivery.Application/
 COPY ["Delivery.Domain/Delivery.Domain.csproj", "Delivery.Domain/"]
 COPY ["Delivery.Infrastructure/Delivery.Infrastructure.csproj", "Delivery.Infrastructure/"]
 COPY ["Orders.Contracts/Orders.Contracts.csproj", "Orders.Contracts/"]
+COPY ["Common.Application/Common.Application.csproj", "Common.Application/"]
+COPY ["Directory.Build.props", "./"]
 RUN dotnet restore "Delivery.Api/Delivery.Api.csproj"
 COPY . .
 WORKDIR "/src/Delivery.Api"

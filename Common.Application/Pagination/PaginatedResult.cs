@@ -1,5 +1,4 @@
-﻿namespace Orders.Application.Common.Models;
-
+namespace Common.Application.Pagination;
 
 /// <summary>
 /// Представляет страницу данных и сведения об общем количестве записей.

@@ -14,6 +14,7 @@ COPY ["Orders.Infrastructure/Orders.Infrastructure.csproj", "Orders.Infrastructu
 COPY ["Orders.Contracts/Orders.Contracts.csproj", "Orders.Contracts/"]
 COPY ["Common.Abstractions/Common.Abstractions.csproj", "Common.Abstractions/"]
 COPY ["Common.Messaging/Common.Messaging.csproj", "Common.Messaging/"]
+COPY ["Common.Application/Common.Application.csproj", "Common.Application/"]
 RUN dotnet restore "Orders.Api/Orders.Api.csproj"
 COPY . .
 WORKDIR "/src/Orders.Api"

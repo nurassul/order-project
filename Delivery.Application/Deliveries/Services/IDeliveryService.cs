@@ -1,3 +1,4 @@
+using Common.Application.Pagination;
 using Delivery.Application.Deliveries.Models;
 
 namespace Delivery.Application.Deliveries.Services;
@@ -26,7 +27,7 @@ public interface IDeliveryService
     /// </summary>
     /// <param name="cancellationToken">Токен отмены операции.</param>
     /// <returns>Задача, результатом которой является список моделей доставки.</returns>
-    Task<List<DeliveryViewModel>> GetAllAsync(CancellationToken cancellationToken);
+    Task<PaginatedResult<DeliveryViewModel>> GetAllAsync(PaginatedRequest request, CancellationToken cancellationToken);
 
     /// <summary>
     /// Возвращает модель доставки по её идентификатору.
@@ -35,5 +36,4 @@ public interface IDeliveryService
     /// <param name="cancellationToken">Токен отмены операции.</param>
     /// <returns>Задача, результатом которой является модель доставки или null, если она не найдена.</returns>
     Task<DeliveryViewModel?> GetByIdAsync(Guid id, CancellationToken cancellationToken);
-
 }

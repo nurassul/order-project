@@ -1,3 +1,4 @@
+using Common.Application.Pagination;
 using Delivery.Application.Deliveries.Models;
 
 namespace Delivery.Application.Deliveries.Repositories;
@@ -30,7 +31,7 @@ public interface IDeliveryRepository
     /// </summary>
     /// <param name="cancellationToken">Токен отмены операции.</param>
     /// <returns>Задача, результатом которой является список доставок.</returns>
-    Task<List<Domain.Models.Delivery>> GetAllAsync(CancellationToken cancellationToken);
+    Task<PaginatedResult<DeliveryViewModel>> GetAllAsync(PaginatedRequest request, CancellationToken cancellationToken);
 
 
     /// <summary>

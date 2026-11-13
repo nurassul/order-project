@@ -1,6 +1,8 @@
+using Common.Application.Pagination;
 using Delivery.Application.Deliveries.Models;
 using Delivery.Application.Deliveries.Repositories;
 using Delivery.Domain.Models.Enums;
+using FluentValidation;
 
 namespace Delivery.Application.Deliveries.Services;
 
@@ -10,15 +12,18 @@ namespace Delivery.Application.Deliveries.Services;
 public class DeliveryService : IDeliveryService
 {
     private readonly IDeliveryRepository _deliveryRepository;
+    private readonly IValidator<PaginatedRequest> _paginatedRequestValidator;
 
 
     /// <summary>
     /// Инициализирует новый экземпляр класса <see cref="DeliveryService"/>.
     /// </summary>
     /// <param name="deliveryRepository">Репозиторий доставок.</param>
-    public DeliveryService(IDeliveryRepository deliveryRepository)
+    /// <param name="paginatedRequestValidator">Валидатор пагинации.</param>
+    public DeliveryService(IDeliveryRepository deliveryRepository, IValidator<PaginatedRequest> paginatedRequestValidator)
     {
         _deliveryRepository = deliveryRepository;
+        _paginatedRequestValidator = paginatedRequestValidator;
     }
 
 
@@ -55,13 +60,14 @@ public class DeliveryService : IDeliveryService
 
 
     /// <inheritdoc/>
-    public async Task<List<DeliveryViewModel>> GetAllAsync(CancellationToken cancellationToken)
+    public async Task<PaginatedResult<DeliveryViewModel>> GetAllAsync(
+        PaginatedRequest request,
+        CancellationToken cancellationToken)
     {
-        var res = await _deliveryRepository.GetAllAsync(cancellationToken);
+        await _paginatedRequestValidator.ValidateAndThrowAsync(
+            request, cancellationToken);
 
-        return res
-            .Select(delivery => ToViewModel(delivery))
-            .ToList();
+        return await _deliveryRepository.GetAllAsync(request, cancellationToken);
     }
 
 
