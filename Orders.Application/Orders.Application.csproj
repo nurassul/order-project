@@ -1,7 +1,8 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
     <ItemGroup>
       <ProjectReference Include="..\Common.Abstractions\Common.Abstractions.csproj" />
+      <ProjectReference Include="..\Common.Application\Common.Application.csproj" />
       <ProjectReference Include="..\Orders.Domain\Orders.Domain.csproj" />
       <ProjectReference Include="..\Orders.Contracts\Orders.Contracts.csproj" />
     </ItemGroup>

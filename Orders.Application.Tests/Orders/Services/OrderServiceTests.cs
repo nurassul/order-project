@@ -1,9 +1,8 @@
-﻿using Common.Abstractions;
+using Common.Abstractions;
 using FluentAssertions;
 using FluentValidation;
 using NSubstitute;
-using Orders.Application.Common.Models;
-using Orders.Application.Common.Validation;
+using Common.Application.Pagination;
 using Orders.Application.Orders.Models;
 using Orders.Application.Orders.Repositories;
 using Orders.Application.Orders.Services;

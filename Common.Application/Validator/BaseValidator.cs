@@ -1,6 +1,6 @@
-﻿using FluentValidation;
+using FluentValidation;
 
-namespace Orders.Application.Common.Validation;
+namespace Common.Application.Validator;
 
 /// <summary>
 /// Задаёт общие настройки валидаторов приложения.

@@ -1,4 +1,4 @@
-﻿using Orders.Application.Common.Models;
+using Common.Application.Pagination;
 using Orders.Application.Orders.Models;
 using Orders.Domain.Orders;
 

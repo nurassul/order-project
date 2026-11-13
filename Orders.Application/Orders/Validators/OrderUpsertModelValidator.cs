@@ -1,5 +1,5 @@
-﻿using FluentValidation;
-using Orders.Application.Common.Validation;
+using Common.Application.Validator;
+using FluentValidation;
 using Orders.Application.Orders.Models;
 
 namespace Orders.Application.Orders.Validators;

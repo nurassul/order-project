@@ -1,5 +1,5 @@
+using Common.Application.Pagination;
 using Microsoft.AspNetCore.Mvc;
-using Orders.Application.Common.Models;
 using Orders.Application.Orders.Models;
 using Orders.Application.Orders.Services;
 
