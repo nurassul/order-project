@@ -41,7 +41,6 @@ public class DeliveryRepository : IDeliveryRepository
     public async Task<Domain.Models.Delivery?> GetByIdAsync(Guid deliveryId, CancellationToken cancellationToken)
     {
         return await _dbContext.Deliveries
-            .AsNoTracking()
             .FirstOrDefaultAsync(delivery => delivery.DeliveryId == deliveryId, cancellationToken);
     }
 

@@ -108,7 +108,6 @@ public class DeliveryServiceTests
             CustomerName = "Test",
             CustomerEmail = "test@mail.com",
             CreatedAt = createdAt,
-            Status = DeliveryStatus.InTransit,
         };
 
         _deliveryRepository.GetByIdAsync(deliveryId, CancellationToken.None)
@@ -128,7 +127,7 @@ public class DeliveryServiceTests
         res.CustomerEmail.Should()
             .Be("test@mail.com");
         res.Status.Should()
-            .Be(DeliveryStatus.InTransit);
+            .Be(DeliveryStatus.Pending);
         res.CreatedAt.Should()
             .Be(createdAt);
     }

@@ -61,4 +61,60 @@ public class DeliveryController : ControllerBase
 
         return Ok(res);
     }
+
+
+    /// <summary>
+    ///
+    /// </summary>
+    /// <returns></returns>
+    [HttpPatch("{id:guid}/start")]
+    public async Task<ActionResult<DeliveryViewModel>> startDelivery(Guid id, CancellationToken cancellationToken)
+    {
+        var res = await _deliveryService.StartDelivery(id, cancellationToken);
+
+        if (res is null)
+        {
+            return NotFound();
+        }
+
+        return Ok(res);
+    }
+
+    /// <summary>
+    ///
+    /// </summary>
+    /// <returns></returns>
+    [HttpPatch("{id:guid}/confirm")]
+    public async Task<ActionResult<DeliveryViewModel>> confirmDeliver(Guid id, CancellationToken cancellationToken)
+    {
+        var res = await _deliveryService.ConfirmDelivery(id, cancellationToken);
+
+        if (res is null)
+        {
+            return NotFound();
+        }
+
+        return Ok(res);
+    }
+
+    /// <summary>
+    ///
+    /// </summary>
+    /// <returns></returns>
+    [HttpPatch("{id:guid}/cancel")]
+    public async Task<ActionResult<DeliveryViewModel>> cancelDelivery(Guid id, CancellationToken cancellationToken)
+    {
+        var res = await _deliveryService.CancelDelivery(id, cancellationToken);
+
+        if (res is null)
+        {
+            return NotFound();
+        }
+
+        return Ok(res);
+    }
+
+
+
+
 }

@@ -25,6 +25,7 @@ builder.Services.AddDbContext<DeliveryDbContext>(options =>
 
 
 builder.Services.AddExceptionHandler<ValidationExceptionHandler>();
+builder.Services.AddExceptionHandler<InvalidDeliveryStatusExceptionHandler>();
 builder.Services.AddProblemDetails();
 
 builder.Services.AddMassTransit(x =>

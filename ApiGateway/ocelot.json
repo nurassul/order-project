@@ -96,6 +96,46 @@
           "Port": 8080
         }
       ]
+    },
+
+    // Начать доставку по id
+    {
+      "UpstreamPathTemplate": "/api/deliveries/{id}/start",
+      "UpstreamHttpMethod": ["PATCH"],
+      "DownstreamPathTemplate": "/api/deliveries/{id}/start",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "delivery-service",
+          "Port": 8080
+        }
+      ]
+    },
+    // Завершить доставку по id
+    {
+      "UpstreamPathTemplate": "/api/deliveries/{id}/confirm",
+      "UpstreamHttpMethod": ["PATCH"],
+      "DownstreamPathTemplate": "/api/deliveries/{id}/confirm",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "delivery-service",
+          "Port": 8080
+        }
+      ]
+    },
+    // Отменить доставку по id
+    {
+      "UpstreamPathTemplate": "/api/deliveries/{id}/cancel",
+      "UpstreamHttpMethod": ["PATCH"],
+      "DownstreamPathTemplate": "/api/deliveries/{id}/cancel",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "delivery-service",
+          "Port": 8080
+        }
+      ]
     }
   ]
 }
