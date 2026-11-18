@@ -4,8 +4,18 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Delivery.Api.ExceptionsHandler;
 
+/// <summary>
+/// Преобразует ошибку изменения статуса доставки в HTTP-ответ 409.
+/// </summary>
 public class InvalidDeliveryStatusExceptionHandler : IExceptionHandler
 {
+    /// <summary>
+    /// Записывает описание недопустимого перехода в ответ клиенту.
+    /// </summary>
+    /// <param name="httpContext">Контекст текущего HTTP-запроса.</param>
+    /// <param name="exception">Исключение, возникшее при обработке запроса.</param>
+    /// <param name="cancellationToken">Токен отмены операции.</param>
+    /// <returns>Значение true, если исключение обработано; иначе false.</returns>
     public async ValueTask<bool> TryHandleAsync(HttpContext httpContext, Exception exception, CancellationToken cancellationToken)
     {
         if (exception is not InvalidDeliveryStatusException deliveryStatusException)

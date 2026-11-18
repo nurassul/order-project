@@ -7,7 +7,7 @@ using FluentValidation;
 namespace Delivery.Application.Deliveries.Services;
 
 /// <summary>
-/// Выполняет сценарии создания и чтения доставок через репозиторий.
+/// Выполняет сценарии создания, чтения и изменения статусов доставок через репозиторий.
 /// </summary>
 public class DeliveryService : IDeliveryService
 {
