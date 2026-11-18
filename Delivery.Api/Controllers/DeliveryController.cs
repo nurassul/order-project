@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Delivery.Api.Controllers;
 
 /// <summary>
-/// Предоставляет HTTP API для чтения доставок.
+/// Предоставляет HTTP API для чтения доставок и изменения их статусов.
 /// </summary>
 [ApiController]
 [Route("api/deliveries")]
@@ -64,9 +64,11 @@ public class DeliveryController : ControllerBase
 
 
     /// <summary>
-    ///
+    /// Начинает доставку.
     /// </summary>
-    /// <returns></returns>
+    /// <param name="id">Идентификатор доставки.</param>
+    /// <param name="cancellationToken">Токен отмены запроса.</param>
+    /// <returns>Ответ 200 с обновлённой доставкой, 404, если она не найдена, или 409 при запрещённом переходе.</returns>
     [HttpPatch("{id:guid}/start")]
     public async Task<ActionResult<DeliveryViewModel>> startDelivery(Guid id, CancellationToken cancellationToken)
     {
@@ -81,9 +83,11 @@ public class DeliveryController : ControllerBase
     }
 
     /// <summary>
-    ///
+    /// Подтверждает завершение доставки.
     /// </summary>
-    /// <returns></returns>
+    /// <param name="id">Идентификатор доставки.</param>
+    /// <param name="cancellationToken">Токен отмены запроса.</param>
+    /// <returns>Ответ 200 с обновлённой доставкой, 404, если она не найдена, или 409 при запрещённом переходе.</returns>
     [HttpPatch("{id:guid}/confirm")]
     public async Task<ActionResult<DeliveryViewModel>> confirmDeliver(Guid id, CancellationToken cancellationToken)
     {
@@ -98,9 +102,11 @@ public class DeliveryController : ControllerBase
     }
 
     /// <summary>
-    ///
+    /// Отменяет доставку.
     /// </summary>
-    /// <returns></returns>
+    /// <param name="id">Идентификатор доставки.</param>
+    /// <param name="cancellationToken">Токен отмены запроса.</param>
+    /// <returns>Ответ 200 с обновлённой доставкой, 404, если она не найдена, или 409 при запрещённом переходе.</returns>
     [HttpPatch("{id:guid}/cancel")]
     public async Task<ActionResult<DeliveryViewModel>> cancelDelivery(Guid id, CancellationToken cancellationToken)
     {

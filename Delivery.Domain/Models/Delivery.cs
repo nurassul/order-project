@@ -29,7 +29,7 @@ public class Delivery
     public required string CustomerEmail { get; set; }
 
     /// <summary>
-    /// Возвращает или задаёт статус доставки.
+    /// Возвращает текущий статус доставки.
     /// </summary>
     public DeliveryStatus Status { get; private set; } = DeliveryStatus.Pending;
 
@@ -40,8 +40,9 @@ public class Delivery
 
 
     /// <summary>
-    ///
+    /// Переводит ожидающую доставку в статус InTransit.
     /// </summary>
+    /// <exception cref="InvalidDeliveryStatusException">Доставка не находится в статусе Pending.</exception>
     public void StartDelivery()
     {
         if (Status != DeliveryStatus.Pending)
@@ -54,8 +55,9 @@ public class Delivery
     }
 
     /// <summary>
-    ///
+    /// Завершает доставку из статуса Pending или InTransit.
     /// </summary>
+    /// <exception cref="InvalidDeliveryStatusException">Доставка уже завершена или отменена.</exception>
     public void ConfirmDelivery()
     {
         if (Status != DeliveryStatus.Pending && Status != DeliveryStatus.InTransit)
@@ -68,8 +70,9 @@ public class Delivery
     }
 
     /// <summary>
-    ///
+    /// Отменяет доставку из статуса Pending или InTransit.
     /// </summary>
+    /// <exception cref="InvalidDeliveryStatusException">Доставка уже завершена или отменена.</exception>
     public void CancelDelivery()
     {
         switch (Status)

@@ -4,7 +4,7 @@ using Delivery.Application.Deliveries.Models;
 namespace Delivery.Application.Deliveries.Services;
 
 /// <summary>
-/// Предоставляет сценарии создания и чтения доставок.
+/// Предоставляет сценарии создания, чтения и изменения статусов доставок.
 /// </summary>
 public interface IDeliveryService
 {
@@ -23,10 +23,11 @@ public interface IDeliveryService
         CancellationToken cancellationToken);
 
     /// <summary>
-    /// Возвращает список моделей доставки.
+    /// Возвращает страницу моделей доставки.
     /// </summary>
     /// <param name="cancellationToken">Токен отмены операции.</param>
-    /// <returns>Задача, результатом которой является список моделей доставки.</returns>
+    /// <param name="request">Параметры пагинации.</param>
+    /// <returns>Задача, результатом которой является страница моделей доставки.</returns>
     Task<PaginatedResult<DeliveryViewModel>> GetAllAsync(PaginatedRequest request, CancellationToken cancellationToken);
 
     /// <summary>
@@ -38,20 +39,29 @@ public interface IDeliveryService
     Task<DeliveryViewModel?> GetByIdAsync(Guid id, CancellationToken cancellationToken);
 
     /// <summary>
-    /// Начинает доставку, меняеть статус на InTransit
+    /// Начинает доставку, изменяя статус на InTransit.
     /// </summary>
-    /// <param name="id">ID доставки.</param>
+    /// <param name="id">Идентификатор доставки.</param>
+    /// <param name="cancellationToken">Токен отмены операции.</param>
+    /// <returns>Задача с обновлённой моделью доставки или null, если доставка не найдена.</returns>
+    /// <exception cref="Delivery.Domain.Exceptions.InvalidDeliveryStatusException">Переход из текущего статуса запрещён.</exception>
     Task<DeliveryViewModel?> StartDelivery(Guid id, CancellationToken cancellationToken);
 
     /// <summary>
-    /// Подтверждает доставку, меняеть статус на Delivered
+    /// Подтверждает доставку, изменяя статус на Delivered.
     /// </summary>
-    /// <param name="id">ID доставки.</param>
+    /// <param name="id">Идентификатор доставки.</param>
+    /// <param name="cancellationToken">Токен отмены операции.</param>
+    /// <returns>Задача с обновлённой моделью доставки или null, если доставка не найдена.</returns>
+    /// <exception cref="Delivery.Domain.Exceptions.InvalidDeliveryStatusException">Переход из текущего статуса запрещён.</exception>
     Task<DeliveryViewModel?> ConfirmDelivery(Guid id, CancellationToken cancellationToken);
 
     /// <summary>
-    /// Отменяет доставку, меняеть статус на Cancelled
+    /// Отменяет доставку, изменяя статус на Cancelled.
     /// </summary>
-    /// <param name="id">ID доставки.</param>
+    /// <param name="id">Идентификатор доставки.</param>
+    /// <param name="cancellationToken">Токен отмены операции.</param>
+    /// <returns>Задача с обновлённой моделью доставки или null, если доставка не найдена.</returns>
+    /// <exception cref="Delivery.Domain.Exceptions.InvalidDeliveryStatusException">Переход из текущего статуса запрещён.</exception>
     Task<DeliveryViewModel?> CancelDelivery(Guid id, CancellationToken cancellationToken);
 }
