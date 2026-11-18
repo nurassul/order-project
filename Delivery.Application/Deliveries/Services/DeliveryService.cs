@@ -20,7 +20,8 @@ public class DeliveryService : IDeliveryService
     /// </summary>
     /// <param name="deliveryRepository">Репозиторий доставок.</param>
     /// <param name="paginatedRequestValidator">Валидатор пагинации.</param>
-    public DeliveryService(IDeliveryRepository deliveryRepository, IValidator<PaginatedRequest> paginatedRequestValidator)
+    public DeliveryService(IDeliveryRepository deliveryRepository,
+        IValidator<PaginatedRequest> paginatedRequestValidator)
     {
         _deliveryRepository = deliveryRepository;
         _paginatedRequestValidator = paginatedRequestValidator;
@@ -48,7 +49,6 @@ public class DeliveryService : IDeliveryService
             CustomerName = customerName,
             CustomerEmail = customerEmail,
             CreatedAt = DateTime.UtcNow,
-            Status = DeliveryStatus.Pending,
         };
 
         _deliveryRepository.Add(delivery);
@@ -78,6 +78,58 @@ public class DeliveryService : IDeliveryService
 
         return res is null ? null : ToViewModel(res);
     }
+
+    /// <inheritdoc />
+    public async Task<DeliveryViewModel?> StartDelivery(Guid id, CancellationToken cancellationToken)
+    {
+        var order = await _deliveryRepository.GetByIdAsync(id, cancellationToken);
+
+        if (order is null)
+        {
+            return null;
+        }
+
+        order.StartDelivery();
+
+        await _deliveryRepository.SaveChangesAsync(cancellationToken);
+
+        return ToViewModel(order);
+    }
+
+    /// <inheritdoc />
+    public async Task<DeliveryViewModel?> ConfirmDelivery(Guid id, CancellationToken cancellationToken)
+    {
+        var order = await _deliveryRepository.GetByIdAsync(id, cancellationToken);
+
+        if (order is null)
+        {
+            return null;
+        }
+
+        order.ConfirmDelivery();
+
+        await _deliveryRepository.SaveChangesAsync(cancellationToken);
+
+        return ToViewModel(order);
+    }
+
+    /// <inheritdoc />
+    public async Task<DeliveryViewModel?> CancelDelivery(Guid id, CancellationToken cancellationToken)
+    {
+        var order = await _deliveryRepository.GetByIdAsync(id, cancellationToken);
+
+        if (order is null)
+        {
+            return null;
+        }
+
+        order.CancelDelivery();
+
+        await _deliveryRepository.SaveChangesAsync(cancellationToken);
+
+        return ToViewModel(order);
+    }
+
 
     private static DeliveryViewModel ToViewModel(Domain.Models.Delivery delivery)
     {

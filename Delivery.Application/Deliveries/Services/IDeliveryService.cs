@@ -36,4 +36,22 @@ public interface IDeliveryService
     /// <param name="cancellationToken">Токен отмены операции.</param>
     /// <returns>Задача, результатом которой является модель доставки или null, если она не найдена.</returns>
     Task<DeliveryViewModel?> GetByIdAsync(Guid id, CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Начинает доставку, меняеть статус на InTransit
+    /// </summary>
+    /// <param name="id">ID доставки.</param>
+    Task<DeliveryViewModel?> StartDelivery(Guid id, CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Подтверждает доставку, меняеть статус на Delivered
+    /// </summary>
+    /// <param name="id">ID доставки.</param>
+    Task<DeliveryViewModel?> ConfirmDelivery(Guid id, CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Отменяет доставку, меняеть статус на Cancelled
+    /// </summary>
+    /// <param name="id">ID доставки.</param>
+    Task<DeliveryViewModel?> CancelDelivery(Guid id, CancellationToken cancellationToken);
 }
