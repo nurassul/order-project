@@ -82,52 +82,96 @@ public class DeliveryService : IDeliveryService
     /// <inheritdoc />
     public async Task<DeliveryViewModel?> StartDelivery(Guid id, CancellationToken cancellationToken)
     {
-        var order = await _deliveryRepository.GetByIdAsync(id, cancellationToken);
+        await _deliveryRepository.BeginTransactionAsync(cancellationToken);
 
-        if (order is null)
+        try
         {
-            return null;
+            var order = await _deliveryRepository.GetByIdForUpdateAsync(id, cancellationToken);
+
+            if (order is null)
+            {
+                await _deliveryRepository.RollbackTransactionAsync(cancellationToken);
+
+                return null;
+            }
+
+            order.StartDelivery();
+
+            await _deliveryRepository.SaveChangesAsync(cancellationToken);
+
+            await _deliveryRepository.CommitTransactionAsync(cancellationToken);
+
+            return ToViewModel(order);
         }
+        catch
+        {
+            await _deliveryRepository.RollbackTransactionAsync(CancellationToken.None);
 
-        order.StartDelivery();
-
-        await _deliveryRepository.SaveChangesAsync(cancellationToken);
-
-        return ToViewModel(order);
+            throw;
+        }
     }
 
     /// <inheritdoc />
     public async Task<DeliveryViewModel?> ConfirmDelivery(Guid id, CancellationToken cancellationToken)
     {
-        var order = await _deliveryRepository.GetByIdAsync(id, cancellationToken);
+        await _deliveryRepository.BeginTransactionAsync(cancellationToken);
 
-        if (order is null)
+        try
         {
-            return null;
+            var order = await _deliveryRepository.GetByIdForUpdateAsync(id, cancellationToken);
+
+            if (order is null)
+            {
+                await _deliveryRepository.RollbackTransactionAsync(cancellationToken);
+
+                return null;
+            }
+
+            order.ConfirmDelivery();
+
+            await _deliveryRepository.SaveChangesAsync(cancellationToken);
+
+            await _deliveryRepository.CommitTransactionAsync(cancellationToken);
+
+            return ToViewModel(order);
         }
+        catch
+        {
+            await _deliveryRepository.RollbackTransactionAsync(CancellationToken.None);
 
-        order.ConfirmDelivery();
-
-        await _deliveryRepository.SaveChangesAsync(cancellationToken);
-
-        return ToViewModel(order);
+            throw;
+        }
     }
 
     /// <inheritdoc />
     public async Task<DeliveryViewModel?> CancelDelivery(Guid id, CancellationToken cancellationToken)
     {
-        var order = await _deliveryRepository.GetByIdAsync(id, cancellationToken);
-
-        if (order is null)
+        await _deliveryRepository.BeginTransactionAsync(cancellationToken);
+        try
         {
-            return null;
+            var order = await _deliveryRepository.GetByIdForUpdateAsync(id, cancellationToken);
+
+            if (order is null)
+            {
+                await _deliveryRepository.RollbackTransactionAsync(cancellationToken);
+
+                return null;
+            }
+
+            order.CancelDelivery();
+
+            await _deliveryRepository.SaveChangesAsync(cancellationToken);
+
+            await _deliveryRepository.CommitTransactionAsync(cancellationToken);
+
+            return ToViewModel(order);
         }
+        catch
+        {
+            await _deliveryRepository.RollbackTransactionAsync(CancellationToken.None);
 
-        order.CancelDelivery();
-
-        await _deliveryRepository.SaveChangesAsync(cancellationToken);
-
-        return ToViewModel(order);
+            throw;
+        }
     }
 
 

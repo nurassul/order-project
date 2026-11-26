@@ -27,6 +27,15 @@ public interface IDeliveryRepository
     Task<Domain.Models.Delivery?> GetByIdAsync(Guid deliveryId, CancellationToken cancellationToken);
 
     /// <summary>
+    ///
+    /// </summary>
+    /// <param name="deliveryId"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    Task<Domain.Models.Delivery?> GetByIdForUpdateAsync(Guid deliveryId, CancellationToken cancellationToken);
+
+
+    /// <summary>
     /// Возвращает список доставок.
     /// </summary>
     /// <param name="cancellationToken">Токен отмены операции.</param>
@@ -46,4 +55,35 @@ public interface IDeliveryRepository
     /// <param name="token">Токен отмены операции.</param>
     /// <returns>Задача, представляющая сохранение изменений.</returns>
     Task SaveChangesAsync(CancellationToken token);
+
+
+    /// <summary>
+    /// Начать транзакцию
+    /// </summary>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    Task BeginTransactionAsync(CancellationToken token);
+
+
+    /// <summary>
+    /// Закоммитеть транзакцию
+    /// </summary>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    Task CommitTransactionAsync(CancellationToken token);
+
+
+    /// <summary>
+    /// Откат транзакции
+    /// </summary>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    Task RollbackTransactionAsync(CancellationToken token);
+
+
+
+
+
+
+
 }

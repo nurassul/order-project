@@ -5,6 +5,7 @@ using Delivery.Application.Deliveries.Repositories;
 using Delivery.Application.Deliveries.Specifications;
 using Delivery.Infrastructure.Persistance;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace Delivery.Infrastructure.Deliveries.Repositories;
 
@@ -15,6 +16,7 @@ public class DeliveryRepository : IDeliveryRepository
 {
     private readonly DeliveryDbContext _dbContext;
 
+    private IDbContextTransaction? _transaction;
 
     /// <summary>
     /// Инициализирует новый экземпляр класса <see cref="DeliveryRepository"/>.
@@ -44,9 +46,23 @@ public class DeliveryRepository : IDeliveryRepository
             .FirstOrDefaultAsync(delivery => delivery.DeliveryId == deliveryId, cancellationToken);
     }
 
+    public async Task<Domain.Models.Delivery?> GetByIdForUpdateAsync(Guid deliveryId,
+        CancellationToken cancellationToken)
+    {
+        if (_transaction == null)
+        {
+            throw new InvalidOperationException("Для чтения с блокировкой необходимо начать транзакцию.");
+        }
+
+        return await _dbContext.Deliveries
+            .FromSql($"SELECT * FROM \"Deliveries\" WHERE \"DeliveryId\" = {deliveryId} FOR UPDATE ")
+            .SingleOrDefaultAsync(cancellationToken);
+    }
+
 
     /// <inheritdoc />
-    public async Task<PaginatedResult<DeliveryViewModel>> GetAllAsync(PaginatedRequest request, CancellationToken cancellationToken)
+    public async Task<PaginatedResult<DeliveryViewModel>> GetAllAsync(PaginatedRequest request,
+        CancellationToken cancellationToken)
     {
         var specification = new DeliveryPageSpec(request);
 
@@ -79,5 +95,57 @@ public class DeliveryRepository : IDeliveryRepository
     public async Task SaveChangesAsync(CancellationToken token)
     {
         await _dbContext.SaveChangesAsync(token);
+    }
+
+    /// <inheritdoc />
+    public async Task BeginTransactionAsync(CancellationToken token)
+    {
+        if (_transaction != null)
+        {
+            throw new InvalidOperationException("Транзакция уже начата.");
+        }
+
+
+        _transaction = await _dbContext.Database.BeginTransactionAsync(token);
+    }
+
+    /// <inheritdoc />
+    public async Task CommitTransactionAsync(CancellationToken token)
+    {
+        if (_transaction is null)
+        {
+            throw new InvalidOperationException("Транзакция не начата.");
+        }
+
+        try
+        {
+            await _transaction.CommitAsync(token);
+        }
+        finally
+        {
+            await _transaction.DisposeAsync();
+
+            _transaction = null;
+        }
+    }
+
+    /// <inheritdoc />
+    public async Task RollbackTransactionAsync(CancellationToken token)
+    {
+        if (_transaction is null)
+        {
+            return;
+        }
+
+        try
+        {
+            await _transaction.RollbackAsync(token);
+        }
+        finally
+        {
+            await _transaction.DisposeAsync();
+
+            _transaction = null;
+        }
     }
 }
