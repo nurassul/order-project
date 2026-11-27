@@ -55,11 +55,16 @@ builder.Services.AddMassTransit(x =>
 
         cfg.ReceiveEndpoint("delivery-orders", endpoint =>
         {
-            endpoint.UseMessageRetry(retry =>
-                retry.Intervals(
-                    TimeSpan.FromSeconds(1)
-                    ));
+            endpoint.UseMessageRetry(retry => retry.Intervals(
+                TimeSpan.FromSeconds(1),
+                TimeSpan.FromSeconds(5)));
 
+            endpoint.ConfigureConsumer<OrderCreatedConsumer>(context);
+        });
+
+        cfg.ReceiveEndpoint("delivery-orders-recovery", endpoint =>
+        {
+            endpoint.ConfigureConsumeTopology = false;
             endpoint.ConfigureConsumer<OrderCreatedConsumer>(context);
         });
     });

@@ -68,6 +68,18 @@ services:
       - "127.0.0.1:15672:15672"
     volumes:
       - rabbitmq_data:/var/lib/rabbitmq
+      - ./docker/rabbitmq/retry.json:/etc/rabbitmq/retry.json:ro
+    post_start:
+      - user: rabbitmq
+        command:
+          - /bin/sh
+          - -ec
+          - |
+            until rabbitmqctl -q await_startup; do sleep 2; done
+            rabbitmqctl import_definitions /etc/rabbitmq/retry.json
+            rabbitmqctl set_policy --vhost / --apply-to queues \
+              delivery-orders-retry '^delivery-orders_error$$' \
+              '{"message-ttl":300000,"dead-letter-exchange":"","dead-letter-routing-key":"delivery-orders-recovery"}'
     networks:
       - app-network
     healthcheck:
