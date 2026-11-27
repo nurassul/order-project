@@ -24,7 +24,7 @@ services:
     image: delivery-service
     build:
       context: .
-      dockerfile: Delivery.Api/Dockerfile
+      dockerfile: Deliveries.Api/Dockerfile
     environment:
       ASPNETCORE_ENVIRONMENT: Development
       ConnectionStrings__DeliveryDb: "Host=db;Port=5432;Database=db_delivery;Username=${DB_USERNAME:?Set DB_USERNAME};Password=${DB_PASSWORD:?Set DB_PASSWORD}"
@@ -58,7 +58,7 @@ services:
       - app-network
     
   rabbitmq:
-    image: rabbitmq:4-management
+    image: rabbitmq:4.4.0-management
     hostname: orderdelivery-rabbitmq
     environment:
       RABBITMQ_DEFAULT_USER: ${RABBITMQ_USERNAME}

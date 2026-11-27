@@ -194,7 +194,7 @@ dotnet test OrderProject.sln
 
 ~~~bash
 dotnet test Orders.Application.Tests
-dotnet test Delivery.Application.Tests
+dotnet test Deliveries.Application.Tests
 ~~~
 
 Тесты используют xUnit, NSubstitute и FluentAssertions. Проверяются сценарии сервисов: создание, чтение, повторное создание доставки и валидация пагинации; в Orders также обновление, удаление и публикация события.
@@ -206,15 +206,15 @@ Docker для модульных тестов не нужен. Подмены н
 | Проекты | Содержимое |
 | --- | --- |
 | ApiGateway | Маршрутизация через Ocelot |
-| Orders.Api, Delivery.Api | Контроллеры, DI, запуск и обработка ошибок |
-| Orders.Application, Delivery.Application | Сервисы, модели, спецификации и интерфейсы репозиториев |
-| Orders.Domain, Delivery.Domain | Сущности и статусы |
-| Orders.Infrastructure, Delivery.Infrastructure | EF Core, репозитории, миграции; в Delivery также consumer |
+| Orders.Api, Deliveries.Api | Контроллеры, DI, запуск и обработка ошибок |
+| Orders.Application, Deliveries.Application | Сервисы, модели, спецификации и интерфейсы репозиториев |
+| Orders.Domain, Deliveries.Domain | Сущности и статусы |
+| Orders.Infrastructure, Deliveries.Infrastructure | EF Core, репозитории, миграции; в Delivery также consumer |
 | Orders.Contracts | Контракт OrderCreated |
 | Common.Abstractions | Интерфейс публикации событий |
 | Common.Messaging | Общий publisher через MassTransit |
 | Common.Application | Пагинация и общие валидаторы |
-| Orders.Application.Tests, Delivery.Application.Tests | Модульные тесты |
+| Orders.Application.Tests, Deliveries.Application.Tests | Модульные тесты |
 
 ## Если запуск не получается
 
