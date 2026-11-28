@@ -132,7 +132,7 @@ public class OrderServiceTests
         var res = await _orderService.DeleteOrderAsync(orderId, CancellationToken.None);
 
         res.Should()
-            .BeFalse();
+            .Be(OrderDeleteResult.NotFound);
 
         _orderRepository.DidNotReceive().Remove(Arg.Any<Order>());
         await _orderRepository.DidNotReceive().SaveChangesAsync(Arg.Any<CancellationToken>());
@@ -163,7 +163,7 @@ public class OrderServiceTests
         var res = await _orderService.DeleteOrderAsync(orderId, CancellationToken.None);
 
         res.Should()
-            .BeTrue();
+            .Be(OrderDeleteResult.Deleted);
 
         _orderRepository.Received(1).Remove(order);
         await _orderRepository.Received(1).SaveChangesAsync(CancellationToken.None);

@@ -50,17 +50,22 @@ public interface IOrderService
 
 
     /// <summary>
-    /// Удаляет заказ по id.
+    /// Удаляет заказ, пока сервис доставки его не зарезервировал.
     /// </summary>
     /// <param name="id">Идентификатор заказа.</param>
     /// <param name="cancellationToken">Токен отмены операции.</param>
-    /// <returns>
-    /// <see langword="true"/>, если заказ удалён;
-    /// <see langword="false"/>, если заказ не найден.
-    /// </returns>
-    Task<bool> DeleteOrderAsync(
+    /// <returns>Результат операции согласно <see cref="OrderDeleteResult"/>.</returns>
+    Task<OrderDeleteResult> DeleteOrderAsync(
         Guid id,
         CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Резервирует заказ перед созданием доставки. Резерв запрещает удаление заказа.
+    /// </summary>
+    /// <param name="orderId">Идентификатор заказа.</param>
+    /// <param name="cancellationToken">Токен отмены операции.</param>
+    /// <returns><see langword="true"/>, если резерв установлен или уже существовал, <see langword="false"/>, если заказ отсутствует.</returns>
+    Task<bool> TryReserveDeliveryAsync(Guid orderId, CancellationToken cancellationToken);
 
     /// <summary>
     /// Обновляет данные существующего заказа.

@@ -4,6 +4,7 @@ using Common.Messaging;
 using Deliveries.Api.ExceptionsHandler;
 using Deliveries.Application.Deliveries.Repositories;
 using Deliveries.Application.Deliveries.Services;
+using Deliveries.Infrastructure.Deliveries.Clients;
 using Deliveries.Infrastructure.Deliveries.Messaging.Consumers;
 using Deliveries.Infrastructure.Deliveries.Repositories;
 using Deliveries.Infrastructure.Persistance;
@@ -18,6 +19,16 @@ builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 builder.Services.AddScoped<IDeliveryService, DeliveryService>();
 builder.Services.AddScoped<IDeliveryRepository, DeliveryRepository>();
+
+var ordersBaseUrl = builder.Configuration["OrdersApi:BaseUrl"];
+if (ordersBaseUrl == null)
+{
+    throw new InvalidOperationException("Не задана подключения OrdersApi");
+}
+
+builder.Services.AddHttpClient<OrdersClient>(client => client.BaseAddress = new Uri(ordersBaseUrl));
+
+
 builder.Services.AddScoped<IValidator<PaginatedRequest>, PaginatedRequestValidator>();
 builder.Services.AddScoped<IEventPublisher, MassTransitEventPublisher>();
 
@@ -55,11 +66,16 @@ builder.Services.AddMassTransit(x =>
 
         cfg.ReceiveEndpoint("delivery-orders", endpoint =>
         {
-            endpoint.UseMessageRetry(retry =>
-                retry.Intervals(
-                    TimeSpan.FromSeconds(1)
-                    ));
+            endpoint.UseMessageRetry(retry => retry.Intervals(
+                TimeSpan.FromSeconds(1),
+                TimeSpan.FromSeconds(5)));
 
+            endpoint.ConfigureConsumer<OrderCreatedConsumer>(context);
+        });
+
+        cfg.ReceiveEndpoint("delivery-orders-recovery", endpoint =>
+        {
+            endpoint.ConfigureConsumeTopology = false;
             endpoint.ConfigureConsumer<OrderCreatedConsumer>(context);
         });
     });

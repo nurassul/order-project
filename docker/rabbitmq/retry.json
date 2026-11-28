@@ -1,0 +1,11 @@
+{
+  "queues": [
+    {
+      "vhost": "/",
+      "name": "delivery-orders-recovery",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {}
+    }
+  ]
+}
