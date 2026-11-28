@@ -28,5 +28,8 @@ public class OrderConfiguration : IEntityTypeConfiguration<Order>
 
         builder.Property(order => order.TotalAmount)
             .HasPrecision(18, 2);
+
+        builder.Property(order => order.DeliveryReserved)
+            .HasDefaultValue(false);
     }
 }

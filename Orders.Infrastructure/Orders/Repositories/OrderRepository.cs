@@ -1,6 +1,7 @@
 using Ardalis.Specification.EntityFrameworkCore;
 using Common.Application.Pagination;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using Orders.Application.Orders.Models;
 using Orders.Application.Orders.Repositories;
 using Orders.Application.Orders.Specifications;
@@ -59,6 +60,36 @@ public class OrderRepository : IOrderRepository
             .FirstOrDefaultAsync(
                 order => order.OrderId == id,
                 cancellationToken);
+    }
+
+    /// <inheritdoc />
+    public async Task<bool> TryReserveDeliveryAsync(Guid orderId, CancellationToken cancellationToken)
+    {
+        var affectedRows = await _dbContext.Orders
+            .Where(order => order.OrderId == orderId)
+            .ExecuteUpdateAsync(
+                setters => setters.SetProperty(order => order.DeliveryReserved, true),
+                cancellationToken);
+
+        return affectedRows == 1;
+    }
+
+    /// <inheritdoc />
+    public async Task<OrderDeleteResult> TryDeleteUnreservedAsync(Guid orderId, CancellationToken cancellationToken)
+    {
+        var affectedRows = await _dbContext.Orders
+            .Where(order => order.OrderId == orderId && order.DeliveryReserved == false)
+            .ExecuteDeleteAsync(cancellationToken);
+
+        if (affectedRows == 1)
+        {
+            return OrderDeleteResult.Deleted;
+        }
+
+        var orderExists = await _dbContext.Orders
+            .AnyAsync(order => order.OrderId == orderId, cancellationToken);
+
+        return orderExists ? OrderDeleteResult.DeliveryReserved : OrderDeleteResult.NotFound;
     }
 
     /// <inheritdoc />

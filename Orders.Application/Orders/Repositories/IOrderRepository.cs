@@ -39,6 +39,23 @@ public interface IOrderRepository
         Guid id,
         CancellationToken cancellationToken);
 
+
+    /// <summary>
+    /// Устанавливает и сохраняет признак резервирования для существующего заказа.
+    /// </summary>
+    /// <param name="orderId">Идентификатор заказа.</param>
+    /// <param name="cancellationToken">Токен отмены операции.</param>
+    /// <returns><see langword="true"/> при первом и повторном резервировании, <see langword="false"/> при отсутствии заказа.</returns>
+    Task<bool> TryReserveDeliveryAsync(Guid orderId, CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Удаляет заказ, проверяя отсутствие резерва непосредственно в запросе на удаление.
+    /// </summary>
+    /// <param name="orderId">Идентификатор заказа.</param>
+    /// <param name="cancellationToken">Токен отмены операции.</param>
+    /// <returns>Результат удаления с учётом существования заказа и резерва доставки.</returns>
+    Task<OrderDeleteResult> TryDeleteUnreservedAsync(Guid orderId, CancellationToken cancellationToken);
+
     /// <summary>
     /// Регистрирует заказ для добавления при следующем сохранении изменений.
     /// </summary>
@@ -57,5 +74,8 @@ public interface IOrderRepository
     /// <param name="cancellationToken">Токен отмены операции.</param>
     /// <returns>Задача, представляющая операцию сохранения.</returns>
     Task SaveChangesAsync(CancellationToken cancellationToken);
+
+
+
 
 }

@@ -116,25 +116,31 @@ public class OrderController : ControllerBase
     }
 
     /// <summary>
-    /// Удаляет заказ по идентификатору.
+    /// Удаляет заказ до резервирования доставки.
     /// </summary>
     /// <param name="id">Идентификатор заказа.</param>
     /// <param name="cancellationToken">Токен отмены HTTP-запроса.</param>
     /// <returns>HTTP-ответ без содержимого при успешном удалении.</returns>
     /// <response code="204">Заказ удалён.</response>
     /// <response code="404">Заказ не найден.</response>
+    /// <response code="409">Заказ зарезервирован для доставки.</response>
     [HttpDelete("{id:guid}")]
     public async Task<IActionResult> DeleteOrderById(
         Guid id,
         CancellationToken cancellationToken)
     {
-        var deleted = await _orderService.DeleteOrderAsync(id, cancellationToken);
+        var result = await _orderService.DeleteOrderAsync(id, cancellationToken);
 
-        if (!deleted)
+        switch (result)
         {
-            return NotFound();
+            case OrderDeleteResult.Deleted:
+                return NoContent();
+            case OrderDeleteResult.DeliveryReserved:
+                return Conflict();
+            case OrderDeleteResult.NotFound:
+                return NotFound();
+            default:
+                throw new InvalidOperationException("Неожиданное значение");
         }
-
-        return NoContent();
     }
 }

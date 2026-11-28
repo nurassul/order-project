@@ -93,21 +93,19 @@ public class OrderService : IOrderService
     }
 
     /// <inheritdoc />
-    public async Task<bool> DeleteOrderAsync(
+    public async Task<OrderDeleteResult> DeleteOrderAsync(
         Guid id,
         CancellationToken cancellationToken)
     {
-        var order = await _repository.GetByIdAsync(id, cancellationToken);
+        var result = await _repository.TryDeleteUnreservedAsync(id, cancellationToken);
 
-        if (order is null)
-        {
-            return false;
-        }
+        return result;
+    }
 
-        _repository.Remove(order);
-        await _repository.SaveChangesAsync(cancellationToken);
-
-        return true;
+    /// <inheritdoc />
+    public async Task<bool> TryReserveDeliveryAsync(Guid orderId, CancellationToken cancellationToken)
+    {
+        return await _repository.TryReserveDeliveryAsync(orderId, cancellationToken);
     }
 
     /// <inheritdoc />

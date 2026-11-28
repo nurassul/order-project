@@ -29,4 +29,9 @@ public class Order
     /// Получает или задаёт дату и время создания заказа в UTC.
     /// </summary>
     public DateTime CreatedAt { get; set; }
+
+    /// <summary>
+    /// Показывает, зарезервировал ли сервис доставки заказ. С момента резерва удаление заказа запрещено.
+    /// </summary>
+    public bool DeliveryReserved { get; set; }
 }
